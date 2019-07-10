@@ -3,6 +3,8 @@ import bpy
 print(bpy.data.collections[0].objects)
 
 Mcol =  bpy.data.collections
+newObj = bpy.ops.object.empty_add(type='PLAIN_AXES', location=(0, 0, 0))
+bpy.context.object.name = "Test"
 
 for col in Mcol:
     
