@@ -1,60 +1,66 @@
-# 1
-
-# Loop dans les collections
-
-# Creer un Null si la collection n'existe pas
-
-#   Loop dans les Child Collections --------------------
-#   Trouver les childs de collections
-#   Creer un Null si le Null n'existe pas
-#   Parenter le Null du child Collection au Null Parent Collection
-#   
-#   Loop pour trouver les objects de la collection actuelle
-#   Parenter les objects de la collections actuelle au null qui correspont a la Collections --------------------
-
-
 import bpy
 
+#Clean -----------------------------------------------------------------------
+
+#1 Creer Un objet par collection
 for col in bpy.data.collections:
-    
-    colName = str(col.name)
-    
-    
+    colName = str(col.name)  
     if bpy.data.objects.get(colName) is None:
         newObj = bpy.ops.object.empty_add(type='PLAIN_AXES', location=(0, 0, 0))
         bpy.context.object.name = col.name
-    
-    myParent = bpy.data.objects[colName]
-    #myChildren = myParent; #initialisation de la variable
 
-    print(col)
+#2 De-parente tout les "Collections" Objets
+for col in bpy.data.collections:
+    colName = str(col.name)
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.data.objects[colName].select_set(True)
+    bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
 
-    for colChild in col.children:
+#3 Virre tout les objets des "Collections" Objets  de leur parentés
+for col in bpy.data.collections:
+    colName = str(col.name)
+    for child in bpy.data.objects[colName].children:
+        childName = str(child.name)
+        print(childName)
+        bpy.ops.object.select_all(action='DESELECT')
+        bpy.data.objects[childName].select_set(True)
+        bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+
+#La cuisine -----------------------------------------------------------------------
+
+#4 Parrentes les "Collections" Objets  entre eux
+
+for col in bpy.data.collections:
+    colName = str(col.name)
+    # Ici je choppe les objets
+    for ObjChild in col.children:
+
+        ObjChildChildName = str(ObjChild.name)
         
-        colChildName = str(colChild.name)
-
-        if bpy.data.objects.get(colChildName) is None:
-            newObj = bpy.ops.object.empty_add(type='PLAIN_AXES', location=(0, 0, 0))
-            bpy.context.object.name = colChildName
-    
-    myChildren = bpy.data.objects[colChildName]
-    myChildren.parent = myParent
-    myChildren.matrix_parent_inverse = myChildren.matrix_world.inverted() 
+        myParent = bpy.data.objects[colName]
+        myChildren = bpy.data.objects[ObjChildChildName]
         
-'''
-    for obj in col.objects:
-        objName = str(obj.name)
-
-        if len(obj.children) > 0 :
-            bpy.ops.object.select_all(action='DESELECT')
-            
-            bpy.data.objects["Cube.001"].select_set(True)
-            bpy.ops.object.select_grouped(type='CHILDREN_RECURSIVE')
-
-            myChildren = bpy.context.selected_objects
-            print(myChildren)
-
         myChildren.parent = myParent
-        myChildren.matrix_parent_inverse = myChildren.matrix_world.inverted() 
-        print(obj)
-'''
+        myChildren.matrix_parent_inverse = myParent.matrix_world.inverted() 
+
+#4 je parente mon objet si il n'as pas
+
+for col in bpy.data.collections:
+    colName = str(col.name)
+    bpy.ops.object.select_all(action='DESELECT')
+ 
+    for ObjChild in col.objects:
+        ObjChildName = str(ObjChild.name)
+        print(ObjChild.name)
+
+        if bpy.data.collections.get(ObjChildName) is None:
+            bpy.ops.object.select_all(action='DESELECT')
+            print("found object")
+            if bpy.data.objects[ObjChildName].parent is None:
+                bpy.ops.object.select_all(action='DESELECT')    
+                print('HELLO')
+                colName = str(col.name)
+                myParent = bpy.data.objects[colName]
+                myChildren = bpy.data.objects[ObjChildName]
+                myChildren.parent = myParent
+                myChildren.matrix_parent_inverse = myParent.matrix_world.inverted() 
