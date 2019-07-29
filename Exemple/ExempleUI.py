@@ -1,7 +1,6 @@
 import bpy
 
-# Enum property.
-# Note: the getter/setter callback must use integer identifiers!
+# Une liste pour l'interface'
 test_items = [
     ("Exemple01", "Red", "", 1),
     ("Exemple02", "Green", "", 2),
@@ -46,7 +45,6 @@ class MyToolPropertyGroup( bpy.types.PropertyGroup ): #PropertyGroup pour faire 
     )
    
    
-
 def DO_SOMETHING(arg1, arg2):
     print("%i * %f = %f" % (arg1, arg2, (arg1*arg2)))
 
@@ -57,19 +55,20 @@ class MyOperator(bpy.types.Operator):
     bl_label = "exemple Object Operator"
 
     def execute(self, context):
+
         props = context.scene.MyPropertyGroup
-        my_val = 2
-        DO_SOMETHING(props.MyInt, MyFloat)
+        bpy.ops.mesh.primitive_cube_add(size=2, enter_editmode=False, location=(props.MyFloat, props.MyFloat, 0))
+        DO_SOMETHING(props.MyInt, props.MyFloat)
         return {'FINISHED'}
 
 
 class MyPanel(bpy.types.Panel):
 
-    bl_space_type = 'PROPERTIES'
-    bl_region_type = 'WINDOW'
-    bl_context = "object"
-    bl_label = "mypanel"
-    bl_idname = "OBJECT_PT_MyPanel"
+    bl_label = "Pannel dans la vue 3D"
+    bl_idname = "PANNEL_PT_VIEW3D"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = "Ma Categorie <3 "
 
     def draw(self, context):
         
@@ -116,8 +115,7 @@ classes = [
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
-    bpy.types.Scene.MyPropertyGroup = bpy.props.PointerProperty(
-            type=MyToolPropertyGroup)
+    bpy.types.Scene.MyPropertyGroup = bpy.props.PointerProperty(type=MyToolPropertyGroup)
 
 
 def unregister():

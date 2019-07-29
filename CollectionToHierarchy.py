@@ -1,5 +1,6 @@
 import bpy
 
+bpy.ops.wm.console_toggle(True, False)
 #Clean -----------------------------------------------------------------------
 
 #1 Creer Un objet par collection
