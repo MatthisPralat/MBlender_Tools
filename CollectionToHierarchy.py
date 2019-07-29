@@ -1,6 +1,6 @@
 import bpy
 
-bpy.ops.wm.console_toggle(True, False)
+#bpy.ops.wm.console_toggle(True, False) Ouvre la console, mais foire sur cette version
 #Clean -----------------------------------------------------------------------
 
 #1 Creer Un objet par collection
