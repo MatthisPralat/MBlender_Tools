@@ -1,3 +1,5 @@
+This project gathers my personnal scripts, tools and tests in python for Blende.
+
 ## MaterialAsignementUtils.py
 
 ![](http://www.matthispralat.fr/wp-content/uploads/2019/07/Replace_Material.gif)
